@@ -1,0 +1,8 @@
+# Large data files (the source ISO and downloaded copies)
+*.iso
+.2
+*.iso.*
+
+# CLion / build output
+.idea/
+cmake-build-debug/
