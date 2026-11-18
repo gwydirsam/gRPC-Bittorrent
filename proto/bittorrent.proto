@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package bittorrent;
+
+service Tracker {
+  rpc Ping (PingRequest) returns (PingReply) {}
+  rpc GetWorkers (GetWorkersRequest) returns (GetWorkersReply) {}
+  rpc Disconnect (DisconnectRequest) returns (DisconnectReply) {}
+}
+
+message GetWorkersRequest {
+  string filename = 1;
+}
+
+message GetWorkersReply {
+  string filename = 1;
+  repeated Worker workers = 2;
+}
+
+message Worker {
+  string ip = 1;
+  string port = 2;
+}
+
+message GetChunksRequest {
+  string filename = 1;
+  int32 chunkID = 2;
+}
+
+message GetChunksReply {
+  string filename = 1;
+  Chunk chunk = 2;
+}
+
+enum ChunkState {
+  Missing = 0;
+  InProgress = 1;
+  Done = 2;
+}
+
+message Chunk {
+  int32 chunkID = 1;
+  string chunkHash = 2;
+  ChunkState chunkState = 3;
+  bytes chunk = 4;
+}
+
+service Peer {
+  rpc Ping (PingRequest) returns (PingReply) {}
+  rpc GetChunks (GetChunksRequest) returns (GetChunksReply) {}
+  rpc GetAvailableChunks (GetAvailableChunksRequest) returns (GetAvailableChunksReply) {}
+}
+
+message PingRequest {
+  Worker worker = 1;
+}
+
+message PingReply {
+  string message = 1;
+}
+
+message DisconnectRequest {
+  Worker worker = 1;
+}
+
+message DisconnectReply {
+  string message = 1;
+}
+
+message GetAvailableChunksRequest {
+  string filename = 1;
+}
+
+message GetAvailableChunksReply {
+  string filename = 1;
+  int32 chunkCount = 2;
+  repeated Chunk chunks = 3;
+}
